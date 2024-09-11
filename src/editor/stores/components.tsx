@@ -1,4 +1,4 @@
-import {create} from 'zustand';
+import { create } from 'zustand';
 
 export interface Component {
   id: number;
@@ -35,6 +35,7 @@ export const useComponetsStore = create<State & Action>(
             parentId,
             state.components
           );
+          console.log('parentComponent', parentComponent);
 
           if (parentComponent) {
             if (parentComponent.children) {
@@ -45,9 +46,9 @@ export const useComponetsStore = create<State & Action>(
           }
 
           component.parentId = parentId;
-          return {components: [...state.components]};
+          return { components: [...state.components] };
         }
-        return {components: [...state.components, component]};
+        return { components: [...state.components, component] };
       }),
     deleteComponent: (componentId) => {
       if (!componentId) return;
@@ -64,7 +65,7 @@ export const useComponetsStore = create<State & Action>(
             (item) => item.id !== +componentId
           );
 
-          set({components: [...get().components]});
+          set({ components: [...get().components] });
         }
       }
     },
@@ -72,30 +73,30 @@ export const useComponetsStore = create<State & Action>(
       set((state) => {
         const component = getComponentById(componentId, state.components);
         if (component) {
-          component.props = {...component.props, ...props};
+          component.props = { ...component.props, ...props };
 
-          return {components: [...state.components]};
+          return { components: [...state.components] };
         }
 
-        return {components: [...state.components]};
+        return { components: [...state.components] };
       }),
-    })
+  })
   )
 );
 
 
 export function getComponentById(
-    id: number | null,
-    components: Component[]
-  ): Component | null {
-    if (!id) return null;
-  
-    for (const component of components) {
-      if (component.id == id) return component;
-      if (component.children && component.children.length > 0) {
-        const result = getComponentById(id, component.children);
-        if (result !== null) return result;
-      }
+  id: number | null,
+  components: Component[]
+): Component | null {
+  if (!id) return null;
+
+  for (const component of components) {
+    if (component.id == id) return component;
+    if (component.children && component.children.length > 0) {
+      const result = getComponentById(id, component.children);
+      if (result !== null) return result;
     }
-    return null;
+  }
+  return null;
 }
